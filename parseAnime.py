@@ -18,7 +18,7 @@ def parseAnime(url):
         soup = BeautifulSoup(s, "html.parser")
 
         aniName = soup.find('span', {'itemprop': 'name'}).text
-        # if (client.animeList.find({'name': aniName}).count() > 0): return
+        if (client.animeList.find({'name': aniName}).count() > 0): return
 
         aniImg = soup.find('img', {'class': 'ac'})['src']
 
@@ -52,4 +52,3 @@ def parseAnime(url):
 
         client.animeList.insert_one(anime)
         print("Added " + aniName)
-

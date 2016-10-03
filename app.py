@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request
-from parse import parseAnime
+from parseAnime import parseAnime
 
 def extractAnimeURL(ani):
     return (ani.find('div', {
@@ -26,5 +26,5 @@ def extractPage(num):
 
     print("Processed Batch #" + str(num))
 
-for i in range(5):
+for i in range(10):
     extractPage(i)
