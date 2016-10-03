@@ -26,5 +26,6 @@ def extractPage(num):
 
     print("Processed Batch #" + str(num))
 
-for i in range(10):
-    extractPage(i)
+def runScraper():
+    for i in range(20):
+        extractPage(i)

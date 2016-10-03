@@ -1,6 +1,10 @@
 from pymongo import MongoClient
 from collections import Counter
 from functools import reduce
+from userSearch import getUserAnime
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 client = MongoClient().animeList
 AnimeList = client.animeList
@@ -23,7 +27,7 @@ def toKeyVal(arr):
 def getGroupRec(aniList):
     recList = map(getRec, aniList)
     recList = dict(reduce(mergeAniRec, recList))
-    print(recList)
+    return recList
 
 def getRec(anime):
     result = AnimeList.find({'name': anime})
@@ -35,4 +39,7 @@ def getRec(anime):
         print("ERROR: " + anime + " not in crawl list")
         return []
 
-getGroupRec(['Clannad: After Story', 'Angel Beats!'])
+aniList = map(lambda ani: ani['name'], getUserAnime('jefftree'))
+aniRec = getGroupRec(aniList).items()
+aniRec = sorted(aniRec, key=lambda ani: ani[1], reverse=True)
+pp.pprint(aniRec[:20]) # Top 20 for now
