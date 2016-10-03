@@ -1,18 +1,26 @@
 from bs4 import BeautifulSoup
 import urllib.request
+from urllib.parse import quote
 from pymongo import MongoClient
 client = MongoClient().animeList
 
-base_url = "https://myanimelist.net/anime/11757/Sword_Art_Online"
-recommendationsPath = '/userrecs'
+recommendationsPath = u'/userrecs'
+
+def cleanURL(url):
+    component = url.split('/')
+    component[len(component)-1] = quote(component[len(component)-1])
+    return '/'.join(component)
 
 def parseAnime(url):
-    with urllib.request.urlopen(base_url + recommendationsPath) as url:
+    cleanedURL = cleanURL(url)
+    with urllib.request.urlopen(cleanedURL + recommendationsPath) as url:
         s = url.read()
         soup = BeautifulSoup(s, "html.parser")
 
         aniName = soup.find('span', {'itemprop': 'name'}).text
-        if (client.animeList.find({'name': aniName}).count() > 0): return
+        # if (client.animeList.find({'name': aniName}).count() > 0): return
+
+        aniImg = soup.find('img', {'class': 'ac'})['src']
 
         stats = soup.find('div', {'itemprop': 'aggregateRating'})
         rating = stats.find('span', {'itemprop': 'ratingValue'}).text
@@ -36,9 +44,12 @@ def parseAnime(url):
 
         anime = {
             'name': aniName,
-            'url': base_url,
+            'img': aniImg,
+            'url': cleanedURL,
             'rating': rating,
             'recommendations': rec
             }
 
         client.animeList.insert_one(anime)
+        print("Added " + aniName)
+
