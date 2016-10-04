@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request
 
-
 def getUserAnime(user):
     url = 'https://myanimelist.net/malappinfo.php?u=' + \
     user + '&status=all&type=anime'

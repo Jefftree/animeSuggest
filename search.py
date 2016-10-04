@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from collections import Counter
 from functools import reduce
 from userSearch import getUserAnime
+from logger import logger
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -34,12 +35,12 @@ def getRec(anime):
     if result.count() > 0:
         anime = result[0]
         recommendations = anime['recommendations']
-        return toKeyVal(recommendations[:5])
+        return toKeyVal(recommendations[::])
     else:
-        print("ERROR: " + anime + " not in crawl list")
+        logger.debug(anime + " not in crawl list")
         return []
 
 aniList = map(lambda ani: ani['name'], getUserAnime('jefftree'))
 aniRec = getGroupRec(aniList).items()
 aniRec = sorted(aniRec, key=lambda ani: ani[1], reverse=True)
-pp.pprint(aniRec[:20]) # Top 20 for now
+pp.pprint(aniRec[:50]) # Top 50 for now
